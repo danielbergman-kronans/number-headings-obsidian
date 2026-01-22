@@ -118,6 +118,15 @@ export const updateHeadingNumbering = (
       }
     }
 
+    // Check max level - if above max, skip numbering entirely
+    // Headings above max level should be completely ignored for numbering purposes
+    if (level > settings.maxLevel) {
+      // If we are above the max level, don't number it and don't affect numbering stack
+      // We also don't update previousLevel, so the next heading is compared against
+      // the last numbered heading, which is the correct behavior
+      continue
+    }
+
     // Adjust numbering stack
     if (level === previousLevel) {
       const x = numberingStack.pop()
@@ -140,11 +149,6 @@ export const updateHeadingNumbering = (
 
     // Set the previous level to this level for the next iteration
     previousLevel = level
-
-    if (level > settings.maxLevel) {
-      // If we are above the max level, just don't number it
-      continue
-    }
 
     // Find the range to replace, and then do it
     const prefixRange = findHeadingPrefixRange(editor, heading, supportFlags)

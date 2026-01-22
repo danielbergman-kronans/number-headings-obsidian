@@ -30,35 +30,35 @@ function parseCompactFrontMatterSettings(fm: FrontMatterCache): NumberHeadingsPl
         settings.auto = true
       } else if (trimmedPart.startsWith(FIRST_LEVEL_PART_KEY)) {
         // Parse first level part
-        const nstring = trimmedPart.substring(FIRST_LEVEL_PART_KEY.length + 1)
+        const nstring = trimmedPart.substring(FIRST_LEVEL_PART_KEY.length + 1).trim()
         const n = parseInt(nstring)
         if (isValidFirstOrMaxLevel(n)) {
           settings.firstLevel = n
         }
       } else if (trimmedPart.startsWith(MAX_LEVEL_PART_KEY)) {
         // Parse max level part
-        const nstring = trimmedPart.substring(MAX_LEVEL_PART_KEY.length + 1)
+        const nstring = trimmedPart.substring(MAX_LEVEL_PART_KEY.length + 1).trim()
         const n = parseInt(nstring)
         if (isValidFirstOrMaxLevel(n)) {
           settings.maxLevel = n
         }
       } else if (trimmedPart.startsWith(START_AT_PART_KEY)) {
         // Parse "start at" part
-        const value = trimmedPart.substring(START_AT_PART_KEY.length + 1)
+        const value = trimmedPart.substring(START_AT_PART_KEY.length + 1).trim()
         if (isValidNumberingValueString(value)) {
           settings.startAt = value
         }
       } else if (trimmedPart.startsWith(CONTENTS_PART_KEY)) {
         if (trimmedPart.length <= CONTENTS_PART_KEY.length + 1) continue
         // Parse contents heading part
-        const tocHeadingBlockIdName = trimmedPart.substring(CONTENTS_PART_KEY.length + 1)
+        const tocHeadingBlockIdName = trimmedPart.substring(CONTENTS_PART_KEY.length + 1).trim()
         if (isValidBlockIdSetting(tocHeadingBlockIdName)) {
           settings.contents = tocHeadingBlockIdName
         }
       } else if (trimmedPart.startsWith(SKIP_PART_KEY)) {
         if (trimmedPart.length <= SKIP_PART_KEY.length + 1) continue
         // Parse skip heading part
-        const skipHeadingBlockIdName = trimmedPart.substring(SKIP_PART_KEY.length + 1)
+        const skipHeadingBlockIdName = trimmedPart.substring(SKIP_PART_KEY.length + 1).trim()
         if (isValidBlockIdSetting(skipHeadingBlockIdName)) {
           settings.skipHeadings = skipHeadingBlockIdName
         }

@@ -325,4 +325,38 @@ describe('updateHeadingNumbering - maxLevel setting', () => {
     expect(heading2AgainChange).toBeDefined()
     expect(heading2AgainChange?.text).toContain('0.2')
   })
+
+  test('headings above maxLevel with existing numbering should have numbering removed', () => {
+    const headings = [
+      createHeading(1, 'Heading 1', 0),
+      createHeading(2, 'Heading 2', 1),
+      createHeading(4, 'Heading 4 (above max, already numbered)', 2), // Level 4 > maxLevel 3, but has existing numbering
+      createHeading(2, 'Heading 2 again', 3)
+    ]
+
+    // Note: heading 4 already has numbering "1.1.1.1" that should be removed
+    const lines = [
+      '# Heading 1',
+      '## Heading 2',
+      '#### 1.1.1.1. Heading 4 (above max, already numbered)', // Already has numbering
+      '## Heading 2 again'
+    ]
+
+    const { viewInfo, changes } = createMockViewInfo(headings, lines)
+
+    updateHeadingNumbering(viewInfo, settings)
+
+    // Should have 4 changes: heading 1, heading 2, heading 4 (cleanup), heading 2 again
+    expect(changes.length).toBe(4)
+
+    // Check that heading 4 had its numbering removed
+    const heading4Change = changes.find(c => c.from.line === 2)
+    expect(heading4Change).toBeDefined()
+    // The change should remove the numbering prefix
+    // The replacement text should be "#### " (heading hash + space, without numbering)
+    expect(heading4Change?.text).not.toContain('1.1.1.1')
+    expect(heading4Change?.text).toContain('####')
+    // The text should end with a space (the separator after the heading hash)
+    expect(heading4Change?.text.trim()).toBe('####')
+  })
 })

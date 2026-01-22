@@ -118,12 +118,20 @@ export const updateHeadingNumbering = (
       }
     }
 
-    // Check max level - if above max, skip numbering entirely
-    // Headings above max level should be completely ignored for numbering purposes
+    // Check max level - if above max, remove any existing numbering but don't add new numbering
+    // Headings above max level should not have numbering, even if they already have it
     if (level > settings.maxLevel) {
-      // If we are above the max level, don't number it and don't affect numbering stack
+      // If we are above the max level, remove any existing numbering but don't affect numbering stack
       // We also don't update previousLevel, so the next heading is compared against
       // the last numbered heading, which is the correct behavior
+      const prefixRange = findHeadingPrefixRange(editor, heading, supportFlags)
+      if (prefixRange !== undefined) {
+        const headingHashString = makeHeadingHashString(editor, heading)
+        if (headingHashString !== undefined) {
+          // Remove any existing numbering by replacing with just the heading hash and space
+          replaceRangeEconomically(editor, changes, prefixRange, headingHashString + ' ')
+        }
+      }
       continue
     }
 
